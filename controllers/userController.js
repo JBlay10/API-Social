@@ -3,7 +3,7 @@ const { User, Thought } = require('../models');
 module.exports = {
 
     getUsers(req, res) {
-        User.findAll()
+        User.findAll() //try find if all doesn't work
         .then((users) => res.json(users))
         .catch((err) => res.status(500).json(err))
     },
@@ -36,7 +36,7 @@ module.exports = {
         )
         .then((user) =>
             !user
-            ? res.status(404).json({ message: 'No user found.' })
+            ? res.status(404).json({ message: 'User not found' })
             : res.json(user)
         )
         .catch((err) => res.status(500).json(err))
@@ -46,22 +46,22 @@ module.exports = {
         User.findOneAndDelete({ _id: req.params.userId })
         .then(user => 
             !user
-            ? res.status(400).json({ message: 'No user found.' })
+            ? res.status(400).json({ message: 'User not found' })
             : Thought.deleteMany({ _id: { $in: user.thoughts }})    
         )
-        .then(() => res.json({ message: 'User and thoughts deleted!' }))
+        .then(() => res.json({ message: 'User and thoughts deleted' }))
         .catch((err) => res.status(500).json(err))
     },
 
     addFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { friends: req.params.friendId } },
+            { $addToSet: { friends: req.params.friendId }},
             { new: true }
         )
         .then((user) =>
             !user
-            ? res.status(404).json({ message: 'No user found.' })
+            ? res.status(404).json({ message: 'User not found' })
             : res.json(user)
         )
         .catch((err) => res.status(500).json(err))
@@ -70,7 +70,7 @@ module.exports = {
     removeFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $pull: { friends: req.params.friendId } },
+            { $pull: { friends: req.params.friendId }},
             { new: true }
         )
         .then((user) =>
@@ -80,4 +80,4 @@ module.exports = {
         )
         .catch((err) => res.status(500).json(err))
     }
-}
+};
